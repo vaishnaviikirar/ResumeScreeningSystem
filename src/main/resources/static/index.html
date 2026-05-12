@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Rescreen — Resume Screening System</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #f5f4f0;
+      --surface:   #ffffff;
+      --surface2:  #f0ede8;
+      --border:    #dedad3;
+      --border2:   #c8c3ba;
+      --ink:       #1a1916;
+      --ink2:      #5a5750;
+      --ink3:      #9b978f;
+      --accent:    #2563eb;
+      --accent-bg: #eff6ff;
+      --green:     #16a34a;
+      --green-bg:  #f0fdf4;
+      --red:       #dc2626;
+      --red-bg:    #fef2f2;
+      --amber:     #d97706;
+      --amber-bg:  #fffbeb;
+      --gold:      #b45309;
+      --silver:    #64748b;
+      --bronze:    #92400e;
+      --radius:    10px;
+      --shadow:    0 1px 3px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.04);
+      --shadow-lg: 0 4px 16px rgba(0,0,0,0.1), 0 12px 40px rgba(0,0,0,0.06);
+    }
+
+    body {
+      font-family: 'Space Grotesk', sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+
+    /* ── NAVBAR ─────────────────────────────────────────── */
+    nav {
+      background: var(--ink);
+      color: #fff;
+      padding: 0 2rem;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 200;
+    }
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .nav-logo {
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .nav-logo svg { width: 20px; height: 20px; }
+
+    .nav-pill {
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      background: rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.7);
+      padding: 0.2rem 0.65rem;
+      border-radius: 100px;
+      border: 1px solid rgba(255,255,255,0.15);
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.5);
+    }
+
+    .nav-status-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: #4ade80;
+      box-shadow: 0 0 6px #4ade80;
+      animation: blink 2.5s infinite;
+    }
+
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+    /* ── LAYOUT ─────────────────────────────────────────── */
+    .layout {
+      display: grid;
+      grid-template-columns: 380px 1fr;
+      min-height: calc(100vh - 56px);
+    }
+
+    /* ── SIDEBAR ─────────────────────────────────────────── */
+    .sidebar {
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      padding: 1.75rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      overflow-y: auto;
+      position: sticky;
+      top: 56px;
+      height: calc(100vh - 56px);
+    }
+
+    .sidebar-section-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink3);
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .sidebar-section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ── FORM ELEMENTS ───────────────────────────────────── */
+    label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--ink2);
+      margin-bottom: 0.35rem;
+    }
+
+    input[type="text"], textarea {
+      width: 100%;
+      background: var(--bg);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--ink);
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.875rem;
+      padding: 0.65rem 0.9rem;
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+      margin-bottom: 1rem;
+      resize: vertical;
+    }
+
+    input[type="text"]:focus, textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(37,99,235,0.12);
+      background: #fff;
+    }
+
+    textarea { min-height: 130px; }
+
+    /* ── BUTTONS ─────────────────────────────────────────── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.45rem;
+      padding: 0.65rem 1.1rem;
+      border-radius: var(--radius);
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+
+    .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+      width: 100%;
+      box-shadow: 0 2px 8px rgba(37,99,235,0.3);
+    }
+    .btn-primary:not(:disabled):hover {
+      background: #1d4ed8;
+      box-shadow: 0 4px 14px rgba(37,99,235,0.4);
+      transform: translateY(-1px);
+    }
+
+    .btn-danger {
+      background: transparent;
+      color: var(--red);
+      border: 1.5px solid #fca5a5;
+      width: 100%;
+    }
+    .btn-danger:not(:disabled):hover {
+      background: var(--red-bg);
+      border-color: var(--red);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--ink2);
+      border: 1.5px solid var(--border);
+    }
+    .btn-ghost:not(:disabled):hover {
+      background: var(--surface2);
+      border-color: var(--border2);
+    }
+
+    .btn-green {
+      background: var(--green);
+      color: white;
+      box-shadow: 0 2px 8px rgba(22,163,74,0.25);
+    }
+    .btn-green:not(:disabled):hover {
+      background: #15803d;
+      transform: translateY(-1px);
+    }
+
+    .btn-sm {
+      padding: 0.4rem 0.75rem;
+      font-size: 0.78rem;
+    }
+
+    /* ── STATUS MSGS ─────────────────────────────────────── */
+    .status {
+      font-size: 0.8rem;
+      font-weight: 500;
+      padding: 0.55rem 0.8rem;
+      border-radius: 8px;
+      margin-bottom: 0.85rem;
+      display: none;
+      align-items: center;
+      gap: 0.45rem;
+      line-height: 1.4;
+    }
+    .status.show { display: flex; }
+    .status.success { background: var(--green-bg); color: var(--green); border: 1px solid #86efac; }
+    .status.error   { background: var(--red-bg);   color: var(--red);   border: 1px solid #fca5a5; }
+    .status.loading { background: var(--accent-bg); color: var(--accent); border: 1px solid #bfdbfe; }
+    .status.info    { background: var(--amber-bg); color: var(--amber); border: 1px solid #fcd34d; }
+
+    /* ── SPINNER ─────────────────────────────────────────── */
+    .spin {
+      width: 13px; height: 13px;
+      border: 2px solid currentColor;
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: rot 0.65s linear infinite;
+      flex-shrink: 0;
+    }
+    @keyframes rot { to { transform: rotate(360deg); } }
+
+    /* ── JD BADGE ─────────────────────────────────────────── */
+    .jd-badge-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 0.25rem;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 0.2rem 0.65rem;
+      border-radius: 100px;
+      letter-spacing: 0.02em;
+    }
+    .badge-active { background: var(--green-bg); color: var(--green); border: 1px solid #86efac; }
+    .badge-none   { background: var(--surface2); color: var(--ink3);  border: 1px solid var(--border); }
+
+    /* ── KEYWORD PILLS ───────────────────────────────────── */
+    .keyword-cloud {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      margin-top: 0.75rem;
+    }
+
+    .kw-pill {
+      font-size: 0.68rem;
+      font-weight: 600;
+      font-family: 'JetBrains Mono', monospace;
+      padding: 0.2rem 0.55rem;
+      border-radius: 6px;
+      background: var(--accent-bg);
+      color: var(--accent);
+      border: 1px solid #bfdbfe;
+    }
+    .kw-more { font-size: 0.68rem; color: var(--ink3); padding: 0.2rem 0.4rem; }
+
+    /* ── DROP ZONE ───────────────────────────────────────── */
+    .drop-zone {
+      border: 2px dashed var(--border2);
+      border-radius: var(--radius);
+      padding: 1.5rem 1rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: var(--bg);
+      margin-bottom: 0.85rem;
+    }
+    .drop-zone:hover, .drop-zone.over {
+      border-color: var(--accent);
+      background: var(--accent-bg);
+    }
+    .drop-zone input { display: none; }
+    .drop-icon { font-size: 1.8rem; margin-bottom: 0.4rem; }
+    .drop-hint { font-size: 0.8rem; color: var(--ink3); }
+    .drop-fname {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--accent);
+      margin-top: 0.4rem;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* ── TIPS BOX ────────────────────────────────────────── */
+    .tips-box {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 0.8rem 1rem;
+      font-size: 0.76rem;
+      color: var(--ink2);
+      line-height: 1.8;
+    }
+    .tips-box strong { color: var(--ink); }
+
+    /* ── MAIN PANEL ─────────────────────────────────────── */
+    .main-panel {
+      padding: 2rem 2.5rem;
+      overflow-y: auto;
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.75rem;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .panel-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .panel-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    /* ── STATS ROW ───────────────────────────────────────── */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-bottom: 1.75rem;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem 1.25rem;
+      box-shadow: var(--shadow);
+    }
+
+    .stat-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: var(--ink3);
+      margin-bottom: 0.3rem;
+    }
+
+    .stat-value {
+      font-size: 1.75rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .stat-sub {
+      font-size: 0.72rem;
+      color: var(--ink3);
+      margin-top: 0.2rem;
+    }
+
+    /* ── TABLE ───────────────────────────────────────────── */
+    .table-wrap {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead {
+      background: var(--surface2);
+      border-bottom: 1px solid var(--border);
+    }
+
+    thead th {
+      text-align: left;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      color: var(--ink3);
+      padding: 0.75rem 1rem;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid var(--border);
+      transition: background 0.12s;
+      animation: rowIn 0.3s ease forwards;
+      opacity: 0;
+    }
+
+    @keyframes rowIn {
+      from { opacity: 0; transform: translateX(-8px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: var(--surface2); }
+
+    tbody td {
+      padding: 0.85rem 1rem;
+      font-size: 0.85rem;
+      vertical-align: middle;
+    }
+
+    /* ── RANK CELL ───────────────────────────────────────── */
+    .rank-cell {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      font-size: 0.9rem;
+      width: 56px;
+    }
+    .rank-1  { color: var(--gold); }
+    .rank-2  { color: var(--silver); }
+    .rank-3  { color: var(--bronze); }
+    .rank-n  { color: var(--ink3); }
+
+    .medal { font-size: 1rem; }
+
+    /* ── CANDIDATE NAME CELL ─────────────────────────────── */
+    .cand-name { font-weight: 700; font-size: 0.9rem; }
+    .cand-file { font-size: 0.7rem; color: var(--ink3); font-family: 'JetBrains Mono', monospace; margin-top: 0.1rem; }
+
+    .contact-val {
+      font-size: 0.8rem;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--ink2);
+    }
+    .contact-na { color: var(--ink3); font-style: italic; font-size: 0.78rem; }
+
+    /* ── SCORE CELL ──────────────────────────────────────── */
+    .score-cell { min-width: 130px; }
+    .score-num  {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      font-size: 1rem;
+    }
+    .score-high   { color: var(--green); }
+    .score-medium { color: var(--amber); }
+    .score-low    { color: var(--red); }
+
+    .score-bar-bg {
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      margin-top: 0.35rem;
+      overflow: hidden;
+    }
+    .score-bar-fill {
+      height: 100%;
+      border-radius: 2px;
+      transition: width 1s ease;
+    }
+    .fill-high   { background: var(--green); }
+    .fill-medium { background: var(--amber); }
+    .fill-low    { background: var(--red); }
+
+    .kw-stat { font-size: 0.72rem; color: var(--ink3); margin-top: 0.2rem; }
+
+    /* ── EMPTY STATE ─────────────────────────────────────── */
+    .empty-state {
+      text-align: center;
+      padding: 5rem 2rem;
+      color: var(--ink3);
+    }
+    .empty-icon { font-size: 3rem; margin-bottom: 1rem; opacity: 0.5; }
+    .empty-title { font-size: 1rem; font-weight: 600; color: var(--ink2); margin-bottom: 0.4rem; }
+    .empty-sub { font-size: 0.85rem; }
+
+    /* ── TOAST ───────────────────────────────────────────── */
+    .toast {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      background: var(--ink);
+      color: #fff;
+      border-radius: 10px;
+      padding: 0.75rem 1.1rem;
+      font-size: 0.83rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      z-index: 999;
+      transform: translateY(80px);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow: var(--shadow-lg);
+      max-width: 320px;
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast.t-success { border-left: 3px solid #4ade80; }
+    .toast.t-error   { border-left: 3px solid #f87171; }
+    .toast.t-info    { border-left: 3px solid #60a5fa; }
+
+    /* ── STEP TRACKER ────────────────────────────────────── */
+    .step-tracker {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin-bottom: 1.25rem;
+    }
+    .step-item {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--ink3);
+    }
+    .step-item.active { color: var(--accent); }
+    .step-item.done   { color: var(--green); }
+    .step-num {
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.68rem;
+      font-weight: 700;
+      border: 1.5px solid currentColor;
+      background: transparent;
+    }
+    .step-item.done .step-num { background: var(--green); color: #fff; border-color: var(--green); }
+    .step-item.active .step-num { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .step-line { flex: 1; max-width: 32px; height: 1px; background: var(--border); margin: 0 0.4rem; }
+
+    /* ── RESPONSIVE ──────────────────────────────────────── */
+    @media (max-width: 900px) {
+      .layout { grid-template-columns: 1fr; }
+      .sidebar { position: static; height: auto; }
+      .stats-row { grid-template-columns: 1fr 1fr; }
+      .main-panel { padding: 1.5rem; }
+    }
+    @media (max-width: 600px) {
+      .stats-row { grid-template-columns: 1fr; }
+      nav { padding: 0 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── NAVBAR ──────────────────────────────────────────────── -->
+<nav>
+  <div class="nav-left">
+    <div class="nav-logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+        <polyline points="14 2 14 8 20 8"/>
+        <line x1="16" y1="13" x2="8" y2="13"/>
+        <line x1="16" y1="17" x2="8" y2="17"/>
+        <polyline points="10 9 9 9 8 9"/>
+      </svg>
+      Rescreen
+    </div>
+    <span class="nav-pill">Resume Screening System</span>
+  </div>
+  <div class="nav-right">
+    <div class="nav-status-dot"></div>
+    Spring Boot · Port 8080
+  </div>
+</nav>
+
+<!-- ── LAYOUT ───────────────────────────────────────────────── -->
+<div class="layout">
+
+  <!-- ════ SIDEBAR ════════════════════════════════════════════ -->
+  <aside class="sidebar">
+
+    <!-- Step Tracker -->
+    <div class="step-tracker">
+      <div class="step-item active" id="st1"><div class="step-num">1</div> Set JD</div>
+      <div class="step-line"></div>
+      <div class="step-item" id="st2"><div class="step-num">2</div> Upload</div>
+      <div class="step-line"></div>
+      <div class="step-item" id="st3"><div class="step-num">3</div> Rankings</div>
+    </div>
+
+    <!-- ── JD SECTION ──────────────────────────────────────── -->
+    <div>
+      <div class="sidebar-section-label">Job Description</div>
+
+      <label>Position / Role Title</label>
+      <input type="text" id="roleInput" placeholder="e.g. Senior Java Backend Developer"/>
+
+      <label>Job Description & Required Skills</label>
+      <textarea id="jdInput" placeholder="Paste JD or list skills comma-separated&#10;e.g. Java, Spring Boot, REST APIs, MySQL, Docker, Git, Agile, Microservices, AWS..."></textarea>
+
+      <div id="jdStatus" class="status"></div>
+
+      <button class="btn btn-primary" id="setJdBtn" onclick="setJD()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        Set Job Description
+      </button>
+
+      <div class="jd-badge-row" style="margin-top:0.85rem;">
+        <span style="font-size:0.78rem;color:var(--ink3);">Active role:</span>
+        <span class="badge badge-none" id="roleBadge">Not set</span>
+      </div>
+
+      <div class="keyword-cloud" id="kwCloud"></div>
+    </div>
+
+    <!-- ── UPLOAD SECTION ──────────────────────────────────── -->
+    <div>
+      <div class="sidebar-section-label">Upload Resume</div>
+
+      <div class="drop-zone" id="dropZone"
+           onclick="document.getElementById('fileIn').click()"
+           ondragover="onDragOver(event)"
+           ondragleave="onDragLeave(event)"
+           ondrop="onDrop(event)">
+        <input type="file" id="fileIn" accept=".pdf" onchange="onFileSelect(event)"/>
+        <div class="drop-icon">📄</div>
+        <div class="drop-hint">Drag & drop PDF here, or <u>browse</u></div>
+        <div class="drop-fname" id="dropFname"></div>
+      </div>
+
+      <div id="uploadStatus" class="status"></div>
+
+      <button class="btn btn-primary" id="uploadBtn" onclick="uploadResume()" disabled style="margin-bottom:0.75rem;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>
+        Upload & Score Resume
+      </button>
+
+      <div class="tips-box">
+        <strong>Tips</strong><br/>
+        • PDF resumes only (max 15 MB)<br/>
+        • Set a JD before uploading<br/>
+        • Upload one at a time — ranked live<br/>
+        • Re-upload same file to re-score<br/>
+        • Clear JD to start a new hiring round
+      </div>
+    </div>
+
+    <!-- ── CLEAR JD ─────────────────────────────────────────── -->
+    <div>
+      <div class="sidebar-section-label">Session Control</div>
+      <button class="btn btn-danger" id="clearJdBtn" onclick="clearJD()" disabled>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+        Clear JD & Reset All Data
+      </button>
+    </div>
+
+  </aside>
+
+  <!-- ════ MAIN PANEL ══════════════════════════════════════════ -->
+  <main class="main-panel">
+
+    <!-- Header -->
+    <div class="panel-header">
+      <div class="panel-title">
+        🏆 Candidate Rankings
+        <span class="badge badge-none" id="countBadge" style="font-size:0.72rem;">0 candidates</span>
+      </div>
+      <div class="panel-actions">
+        <button class="btn btn-ghost btn-sm" onclick="refreshCandidates()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+          Refresh
+        </button>
+        <button class="btn btn-green btn-sm" id="exportBtn" onclick="exportCSV()" disabled>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Export CSV
+        </button>
+      </div>
+    </div>
+
+    <!-- Stats Row -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-label">Total Candidates</div>
+        <div class="stat-value" id="statTotal">0</div>
+        <div class="stat-sub">uploaded this session</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Highest Score</div>
+        <div class="stat-value" id="statTop">—</div>
+        <div class="stat-sub">% keyword match</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">JD Keywords</div>
+        <div class="stat-value" id="statKW">0</div>
+        <div class="stat-sub">extracted from JD</div>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-wrap">
+      <table id="rankTable">
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Candidate</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Score</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody">
+          <tr style="animation:none;opacity:1;">
+            <td colspan="5">
+              <div class="empty-state">
+                <div class="empty-icon">📭</div>
+                <div class="empty-title">No candidates yet</div>
+                <div class="empty-sub">Set a Job Description, then upload PDF resumes to see live rankings.</div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </main>
+</div>
+
+<!-- ── TOAST ──────────────────────────────────────────────────── -->
+<div class="toast" id="toast"></div>
+
+<script>
+  const API = 'http://localhost:8080';
+  let selectedFile = null;
+  let jdIsSet = false;
+
+  // ── SET JD ───────────────────────────────────────────────────
+  async function setJD() {
+    const role = document.getElementById('roleInput').value.trim();
+    const jd   = document.getElementById('jdInput').value.trim();
+    if (!role || !jd) {
+      showStatus('jdStatus', 'error', '⚠ Please enter both a role title and job description.');
+      return;
+    }
+    setBtnLoading('setJdBtn', true, 'Setting...');
+    showStatus('jdStatus', 'loading', 'Extracting keywords and setting JD...');
+
+    try {
+      const form = new FormData();
+      form.append('role', role);
+      form.append('jd', jd);
+      const res  = await fetch(`${API}/setJD`, { method: 'POST', body: form });
+      const data = await res.json();
+
+      if (res.ok) {
+        jdIsSet = true;
+        showStatus('jdStatus', 'success', `✓ JD set! Extracted ${data.keywordCount} keywords.`);
+        setRoleBadge(role);
+        renderKwCloud(data.keywords || []);
+        document.getElementById('clearJdBtn').disabled = false;
+        updateSteps(2);
+        updateStats(0, null, data.keywordCount);
+        renderTable([]);
+        toast('t-success', `✓ JD set for "${role}"`);
+      } else {
+        showStatus('jdStatus', 'error', '✗ ' + (data.error || 'Failed to set JD.'));
+      }
+    } catch {
+      showStatus('jdStatus', 'error', '✗ Cannot reach server — is Spring Boot running on port 8080?');
+    } finally {
+      setBtnLoading('setJdBtn', false, '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Set Job Description');
+    }
+  }
+
+  // ── CLEAR JD ─────────────────────────────────────────────────
+  async function clearJD() {
+    if (!confirm('Clear the active JD and remove ALL candidate data for this session?')) return;
+    try {
+      const res  = await fetch(`${API}/clearJD`, { method: 'POST' });
+      const data = await res.json();
+      if (res.ok) {
+        jdIsSet = false;
+        selectedFile = null;
+        document.getElementById('fileIn').value = '';
+        document.getElementById('dropFname').textContent = '';
+        document.getElementById('uploadBtn').disabled = true;
+        document.getElementById('clearJdBtn').disabled = true;
+        document.getElementById('exportBtn').disabled = true;
+        document.getElementById('roleBadge').className = 'badge badge-none';
+        document.getElementById('roleBadge').textContent = 'Not set';
+        document.getElementById('kwCloud').innerHTML = '';
+        clearStatus('jdStatus');
+        clearStatus('uploadStatus');
+        renderTable([]);
+        updateStats(0, null, 0);
+        updateSteps(1);
+        toast('t-info', '🗑 JD cleared. Ready for new session.');
+      }
+    } catch {
+      toast('t-error', '✗ Server unreachable.');
+    }
+  }
+
+  // ── FILE HANDLING ─────────────────────────────────────────────
+  function onFileSelect(e) { setFile(e.target.files[0]); }
+  function onDragOver(e) {
+    e.preventDefault();
+    document.getElementById('dropZone').classList.add('over');
+  }
+  function onDragLeave() {
+    document.getElementById('dropZone').classList.remove('over');
+  }
+  function onDrop(e) {
+    e.preventDefault();
+    document.getElementById('dropZone').classList.remove('over');
+    setFile(e.dataTransfer.files[0]);
+  }
+
+  function setFile(file) {
+    if (!file) return;
+    if (!file.name.toLowerCase().endsWith('.pdf')) {
+      showStatus('uploadStatus', 'error', '⚠ Only PDF files are supported.');
+      return;
+    }
+    selectedFile = file;
+    document.getElementById('dropFname').textContent = '📄 ' + file.name;
+    document.getElementById('uploadBtn').disabled = false;
+    clearStatus('uploadStatus');
+  }
+
+  // ── UPLOAD RESUME ─────────────────────────────────────────────
+  async function uploadResume() {
+    if (!selectedFile) {
+      showStatus('uploadStatus', 'error', '⚠ Please select a PDF resume first.'); return;
+    }
+    if (!jdIsSet) {
+      showStatus('uploadStatus', 'error', '⚠ Please set a Job Description first.'); return;
+    }
+    document.getElementById('uploadBtn').disabled = true;
+    showStatus('uploadStatus', 'loading', 'Extracting text & scoring resume...');
+
+    try {
+      const form = new FormData();
+      form.append('file', selectedFile);
+      const res  = await fetch(`${API}/uploadResume`, { method: 'POST', body: form });
+      const data = await res.json();
+
+      if (res.ok) {
+        showStatus('uploadStatus', 'success',
+          `✓ ${data.name} scored ${data.score}% — email: ${data.email}, phone: ${data.phone}`);
+        resetFile();
+        await refreshCandidates();
+        updateSteps(3);
+        toast('t-success', `✓ ${data.name} — ${data.score}% match`);
+      } else {
+        showStatus('uploadStatus', 'error', '✗ ' + (data.error || 'Upload failed.'));
+      }
+    } catch {
+      showStatus('uploadStatus', 'error', '✗ Cannot reach server — is Spring Boot running?');
+    } finally {
+      document.getElementById('uploadBtn').disabled = false;
+    }
+  }
+
+  // ── REFRESH ───────────────────────────────────────────────────
+  async function refreshCandidates() {
+    try {
+      const res = await fetch(`${API}/candidates`);
+      const list = await res.json();
+      renderTable(list);
+      const top = list.length ? list[0].score : null;
+      updateStats(list.length, top, null);
+      document.getElementById('exportBtn').disabled = list.length === 0;
+    } catch (e) {
+      console.error('Refresh failed:', e);
+    }
+  }
+
+  // ── EXPORT CSV ────────────────────────────────────────────────
+  function exportCSV() {
+    const link = document.createElement('a');
+    link.href = `${API}/exportCSV`;
+    link.download = 'candidate_rankings.csv';
+    link.click();
+    toast('t-info', '⬇ Downloading candidate_rankings.csv');
+  }
+
+  // ── RENDER TABLE ──────────────────────────────────────────────
+  function renderTable(candidates) {
+    const tbody = document.getElementById('tableBody');
+    const count = candidates.length;
+    document.getElementById('countBadge').textContent =
+      `${count} candidate${count !== 1 ? 's' : ''}`;
+
+    if (!count) {
+      tbody.innerHTML = `<tr style="animation:none;opacity:1;"><td colspan="5">
+        <div class="empty-state">
+          <div class="empty-icon">📭</div>
+          <div class="empty-title">No candidates yet</div>
+          <div class="empty-sub">Upload PDF resumes to see live rankings here.</div>
+        </div></td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = candidates.map((c, i) => {
+      const rank = i + 1;
+      const medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : null;
+      const rankClass = rank === 1 ? 'rank-1' : rank === 2 ? 'rank-2' : rank === 3 ? 'rank-3' : 'rank-n';
+
+      const sc = c.score;
+      const scoreClass = sc >= 60 ? 'score-high' : sc >= 30 ? 'score-medium' : 'score-low';
+      const fillClass  = sc >= 60 ? 'fill-high'  : sc >= 30 ? 'fill-medium'  : 'fill-low';
+
+      const email = c.email && c.email !== 'Not found'
+        ? `<span class="contact-val">${esc(c.email)}</span>`
+        : `<span class="contact-na">—</span>`;
+
+      const phone = c.phone && c.phone !== 'Not found'
+        ? `<span class="contact-val">${esc(c.phone)}</span>`
+        : `<span class="contact-na">—</span>`;
+
+      return `<tr style="animation-delay:${i * 0.05}s">
+        <td class="rank-cell ${rankClass}">
+          ${medal ? `<span class="medal">${medal}</span>` : `#${rank}`}
+        </td>
+        <td>
+          <div class="cand-name">${esc(c.name)}</div>
+          <div class="cand-file">${esc(c.filename || '')}</div>
+        </td>
+        <td>${email}</td>
+        <td>${phone}</td>
+        <td class="score-cell">
+          <span class="score-num ${scoreClass}">${sc}%</span>
+          <div class="score-bar-bg">
+            <div class="score-bar-fill ${fillClass}" style="width:${sc}%"></div>
+          </div>
+          <div class="kw-stat">${c.matchedKeywords} / ${c.totalKeywords} keywords matched</div>
+        </td>
+      </tr>`;
+    }).join('');
+  }
+
+  // ── STATS ─────────────────────────────────────────────────────
+  function updateStats(total, topScore, kwCount) {
+    if (total !== null)   document.getElementById('statTotal').textContent = total;
+    if (topScore !== null) document.getElementById('statTop').textContent = topScore + '%';
+    if (total === 0)      document.getElementById('statTop').textContent = '—';
+    if (kwCount !== null) document.getElementById('statKW').textContent = kwCount;
+  }
+
+  // ── UI HELPERS ────────────────────────────────────────────────
+  function showStatus(id, type, msg) {
+    const el = document.getElementById(id);
+    el.className = `status ${type} show`;
+    el.innerHTML = type === 'loading' ? `<div class="spin"></div>${msg}` : msg;
+  }
+  function clearStatus(id) {
+    const el = document.getElementById(id);
+    el.className = 'status';
+    el.innerHTML = '';
+  }
+
+  function setBtnLoading(id, loading, html) {
+    const btn = document.getElementById(id);
+    btn.disabled = loading;
+    btn.innerHTML = loading ? '<div class="spin"></div> Setting...' : html;
+  }
+
+  function setRoleBadge(role) {
+    const b = document.getElementById('roleBadge');
+    b.className = 'badge badge-active';
+    b.textContent = role;
+  }
+
+  function renderKwCloud(keywords) {
+    const c = document.getElementById('kwCloud');
+    const show = keywords.slice(0, 12);
+    const rest  = keywords.length - show.length;
+    c.innerHTML = show.map(k => `<span class="kw-pill">${esc(k)}</span>`).join('')
+      + (rest > 0 ? `<span class="kw-more">+${rest} more</span>` : '');
+  }
+
+  function resetFile() {
+    selectedFile = null;
+    document.getElementById('fileIn').value = '';
+    document.getElementById('dropFname').textContent = '';
+    document.getElementById('uploadBtn').disabled = true;
+  }
+
+  function updateSteps(active) {
+    for (let i = 1; i <= 3; i++) {
+      const el = document.getElementById(`st${i}`);
+      el.className = 'step-item' +
+        (i < active ? ' done' : i === active ? ' active' : '');
+    }
+  }
+
+  function toast(type, msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = `toast ${type} show`;
+    clearTimeout(t._timer);
+    t._timer = setTimeout(() => { t.className = `toast ${type}`; }, 3500);
+  }
+
+  function esc(str) {
+    if (!str) return '';
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+</script>
+</body>
+</html>
