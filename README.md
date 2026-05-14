@@ -60,7 +60,8 @@ Open **http://localhost:8080** in your browser.
 
 ---
 [🚀 Live Demo](https://resumescreeningsystem-production-v1k7.up.railway.app)
-Go try it now, open for ur valuable feedbacks
+
+Go try it now, open for your valuable feedbacks ❤️
 ---
 
 ## REST API Endpoints
