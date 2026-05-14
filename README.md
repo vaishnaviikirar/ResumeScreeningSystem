@@ -1,4 +1,4 @@
-# ResumeSift — Resume Screening System
+# Rescreen — Resume Screening System
 
 AI-powered resume screening built with **Java 17 + Spring Boot 3.2 + Apache PDFBox 3.0**.
 No database needed — all data lives in-memory until the JD is cleared.
@@ -59,6 +59,10 @@ java -jar target/ResumeScreeningSystem-1.0.0.jar
 Open **http://localhost:8080** in your browser.
 
 ---
+Live Demo - resumescreeningsystem-production-v1k7.up.railway.app
+
+Go try it now, open for ur valuable feedbacks
+---
 
 ## REST API Endpoints
 
@@ -105,3 +109,7 @@ ResumeScreeningSystem/
         └── static/
             └── index.html                    ← Frontend (served by Spring Boot)
 ```
+<img width="1919" height="918" alt="image" src="https://github.com/user-attachments/assets/3450bf95-90f3-4fc4-82f5-721e1bdeeab7" />
+
+
+
