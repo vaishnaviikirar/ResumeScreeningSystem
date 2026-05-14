@@ -59,8 +59,7 @@ java -jar target/ResumeScreeningSystem-1.0.0.jar
 Open **http://localhost:8080** in your browser.
 
 ---
-Live Demo - resumescreeningsystem-production-v1k7.up.railway.app
-
+[🚀 Live Demo](https://resumescreeningsystem-production-v1k7.up.railway.app)
 Go try it now, open for ur valuable feedbacks
 ---
 
